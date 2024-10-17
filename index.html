@@ -41,6 +41,9 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        select {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -106,26 +109,47 @@
         }
 
         function displayHeaders(headers) {
-            summaryDiv.innerHTML = `<h2>Detected Columns:</h2>${headers.map(header => `<div class="field-status">${header}</div>`).join('')}`;
+            summaryDiv.innerHTML = `<h2>Detected Columns:</h2>`;
+            const fieldTypes = {};
+            headers.forEach(header => {
+                const detectedType = detectFieldType(header);
+                fieldTypes[header] = detectedType; // Store detected types
+                summaryDiv.innerHTML += `
+                    <div class="field-status">
+                        ${header}:
+                        <select data-field="${header}">
+                            <option value="unknown">Unknown</option>
+                            <option value="zip" ${detectedType === 'zip' ? 'selected' : ''}>ZIP</option>
+                            <option value="date" ${detectedType === 'date' ? 'selected' : ''}>Date</option>
+                            <option value="currency" ${detectedType === 'currency' ? 'selected' : ''}>Currency</option>
+                            <option value="url" ${detectedType === 'url' ? 'selected' : ''}>URL</option>
+                            <option value="name" ${detectedType === 'name' ? 'selected' : ''}>Name</option>
+                            <option value="address" ${detectedType === 'address' ? 'selected' : ''}>Address</option>
+                            <option value="age" ${detectedType === 'age' ? 'selected' : ''}>Age</option>
+                            <option value="time" ${detectedType === 'time' ? 'selected' : ''}>Time</option>
+                            <option value="percentage" ${detectedType === 'percentage' ? 'selected' : ''}>Percentage</option>
+                        </select>
+                    </div>`;
+            });
         }
 
         function performDataQualityCheck(headers, data) {
             const summary = {};
             headers.forEach((header, index) => {
+                const selectedType = document.querySelector(`select[data-field="${header}"]`).value;
                 summary[header] = {
                     total: data.length,
                     validCount: 0,
                     invalidRows: []
                 };
                 const columnData = data.map(row => row[index]);
-                checkFieldQuality(header, columnData, summary[header]);
+                checkFieldQuality(selectedType, header, columnData, summary[header]);
             });
             displayQualitySummary(summary);
         }
 
-        function checkFieldQuality(field, columnData, summary) {
+        function checkFieldQuality(type, field, columnData, summary) {
             let invalidCount = 0;
-            const type = detectFieldType(field);
             switch (type) {
                 case 'zip':
                     invalidCount = columnData.filter((value, rowIndex) => {
@@ -202,30 +226,31 @@
             summary.validCount = summary.total - invalidCount;
         }
 
-        function detectFieldType(field) {
-            // Simple heuristic to determine the type based on the name
-            if (/zip/i.test(field)) return 'zip';
-            if (/date/i.test(field)) return 'date';
-            if (/currency/i.test(field)) return 'currency';
-            if (/url/i.test(field)) return 'url';
-            if (/name/i.test(field)) return 'name';
-            if (/address/i.test(field)) return 'address';
-            if (/age/i.test(field)) return 'age';
-            if (/time/i.test(field)) return 'time';
-            if (/percentage/i.test(field)) return 'percentage';
-            return 'unknown';
-        }
-
         function displayQualitySummary(summary) {
-            summaryDiv.innerHTML += `<h2>Data Quality Summary:</h2>`;
-            for (const [field, stats] of Object.entries(summary)) {
-                const qualityScore = ((stats.validCount / stats.total) * 100).toFixed(2);
-                summaryDiv.innerHTML += `
-                    <div class="field-status">
-                        ${field}: Quality Score: ${qualityScore}% <br>
-                        Invalid Rows: ${stats.invalidRows.length ? stats.invalidRows.join(', ') : 'None'}
+            let resultHtml = `<h2>Data Quality Summary:</h2>`;
+            for (const field in summary) {
+                resultHtml += `
+                    <div>
+                        <strong>${field}</strong>: Total - ${summary[field].total}, Valid - ${summary[field].validCount}, Invalid - ${summary[field].invalidRows.length}<br>
+                        Invalid Rows: ${summary[field].invalidRows.join(', ') || 'None'}
                     </div>`;
             }
+            summaryDiv.innerHTML += resultHtml;
+        }
+
+        function detectFieldType(field) {
+            // Implement your logic to detect field types based on field name
+            const lowerCaseField = field.toLowerCase();
+            if (lowerCaseField.includes('zip')) return 'zip';
+            if (lowerCaseField.includes('date')) return 'date';
+            if (lowerCaseField.includes('amount') || lowerCaseField.includes('price')) return 'currency';
+            if (lowerCaseField.includes('url')) return 'url';
+            if (lowerCaseField.includes('name')) return 'name';
+            if (lowerCaseField.includes('address')) return 'address';
+            if (lowerCaseField.includes('age')) return 'age';
+            if (lowerCaseField.includes('time')) return 'time';
+            if (lowerCaseField.includes('percentage')) return 'percentage';
+            return 'unknown';
         }
     </script>
 </body>
