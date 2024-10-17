@@ -1,61 +1,146 @@
+/* Basic styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding: 20px;
     background-color: #f4f4f4;
 }
 
-.container {
+h1 {
     text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
     background-color: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* File Upload Section */
 .upload-area {
-    padding: 1rem;
-    border: 2px dashed #007bff;
-    border-radius: 10px;
-    background-color: #e9ecef;
+    border: 2px dashed #007BFF;
+    padding: 40px;
+    text-align: center;
+    color: #007BFF;
+    font-size: 1.2em;
+    border-radius: 8px;
     cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
 }
 
-.upload-area p {
-    margin: 0;
-    color: #007bff;
+.upload-area:hover {
+    background-color: #e9f5ff;
 }
 
 #fileInput {
     display: none;
 }
 
+/* Schema Detection and Field Types Section */
+.drag-drop-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Left: Field Types Section */
+.field-types {
+    width: 30%;
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.field-types h4 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.draggable-field {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    text-align: center;
+    cursor: grab;
+    transition: transform 0.2s ease;
+}
+
+.draggable-field:hover {
+    transform: scale(1.05);
+}
+
+/* Right: Schema Section */
+.schema-section {
+    width: 65%;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.schema-section h4 {
+    margin-bottom: 10px;
+}
+
+#schemaContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.schema-field {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.dropzone {
+    width: 60%;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border: 2px dashed #007BFF;
+    text-align: center;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.dropzone.dragover {
+    background-color: #d1eaff;
+}
+
+/* Results Section */
+#results {
+    margin-top: 20px;
+}
+
+.horizontal-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.horizontal-summary div {
+    background-color: #e9f5ff;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    text-align: center;
+}
+
+/* Hidden Elements */
 .hidden {
     display: none;
-}
-
-#schemaFields {
-    margin-top: 1rem;
-}
-
-button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-#results {
-    margin-top: 2rem;
 }

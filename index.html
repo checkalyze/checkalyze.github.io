@@ -4,30 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkalyzer</title>
-    <!-- Adjusted the path to include the repo name -->
     <link rel="stylesheet" href="/checkalyzer/style.css">
 </head>
 <body>
 
     <div class="container">
         <h1>Checkalyzer - Data Quality Checker</h1>
+        
+        <!-- File Upload Section -->
         <div class="upload-area" id="uploadArea">
             <p>Drag & Drop your CSV file here or click to upload</p>
             <input type="file" id="fileInput" accept=".csv">
         </div>
+
+        <!-- Schema and Field Types Section -->
         <div id="fileDetails" class="hidden">
             <h3>Schema Detection</h3>
             <p id="columnsUploaded"></p>
-            <div id="schemaFields"></div>
+
+            <!-- Drag-and-Drop Section -->
+            <div class="drag-drop-section">
+                
+                <!-- Left: Available Field Types -->
+                <div class="field-types">
+                    <h4>Field Types</h4>
+                    <div class="draggable-field" draggable="true" data-field="Phone">Phone</div>
+                    <div class="draggable-field" draggable="true" data-field="Date">Date</div>
+                    <div class="draggable-field" draggable="true" data-field="Email">Email</div>
+                    <div class="draggable-field" draggable="true" data-field="Zip Code">Zip Code</div>
+                    <div class="draggable-field" draggable="true" data-field="Name">Name</div>
+                </div>
+
+                <!-- Right: Schema with Dropzones for Field Types -->
+                <div id="schemaFields" class="schema-section">
+                    <h4>Schema</h4>
+                    <div id="schemaContainer"></div>
+                </div>
+            </div>
+
+            <!-- Button to Perform Data Analysis -->
             <button id="analyzeBtn" class="hidden">Analyze Data</button>
         </div>
+
+        <!-- Results Section -->
         <div id="results" class="hidden">
             <h3>Data Quality Summary</h3>
-            <pre id="qualitySummary"></pre>
+            <div id="qualitySummary" class="horizontal-summary"></div>
         </div>
     </div>
 
-    <!-- Adjusted the path to include the repo name -->
     <script src="/checkalyzer/script.js"></script>
 </body>
 </html>

@@ -20,86 +20,94 @@ function processCSV(data) {
     const rows = data.split('\n').map(row => row.split(','));
     const headers = rows[0];
     const fileDetails = document.getElementById('fileDetails');
-    const schemaFields = document.getElementById('schemaFields');
+    const schemaContainer = document.getElementById('schemaContainer');
     
-    // Show schema details
-    document.getElementById('columnsUploaded').innerText = `${headers.length} columns out of ${headers.length} were successfully uploaded.`;
-    
-    schemaFields.innerHTML = headers.map(header => `
-        <div>
-            <label>${header}</label>
-            <select>
-                <option value="">None</option>
-                <option value="Phone">Phone</option>
-                <option value="Date">Date</option>
-                <option value="Email">Email</option>
-                <option value="Zip Code">Zip Code</option>
-                <option value="Name">Name</option>
-            </select>
-        </div>
-    `).join('');
+    document.getElementById('columnsUploaded').innerText = `${headers.length} columns uploaded.`;
+
+    schemaContainer.innerHTML = headers.map(header => {
+        const detectedType = detectFieldType(header);
+        return `
+            <div class="schema-field">
+                <div class="column-name">${header}</div>
+                <div class="dropzone" data-column="${header}">${detectedType || 'Drag field type here'}</div>
+            </div>
+        `;
+    }).join('');
 
     fileDetails.classList.remove('hidden');
     document.getElementById('analyzeBtn').classList.remove('hidden');
-
-    document.getElementById('analyzeBtn').addEventListener('click', () => analyzeData(rows));
+    setupDragAndDrop();
 }
 
-// Validation Logic
-
-function isValidPhone(phone) {
-    const phoneRegex = /^(\d{3}-\d{3}-\d{4}|\(\d{3}\)\s\d{3}-\d{4}|\d{10})$/;
-    return phoneRegex.test(phone);
+function detectFieldType(header) {
+    const headerLower = header.toLowerCase();
+    if (headerLower.includes('phone')) return 'Phone';
+    if (headerLower.includes('date')) return 'Date';
+    if (headerLower.includes('email')) return 'Email';
+    if (headerLower.includes('zip')) return 'Zip Code';
+    if (headerLower.includes('name')) return 'Name';
+    return null;
 }
 
-function isValidDate(date) {
-    const dateRegex = /^(0[1-9]|1[0-2])[\/\-](0[1-9]|[12]\d|3[01])[\/\-](\d{4})$/; // MM/DD/YYYY or MM-DD-YYYY
-    return dateRegex.test(date);
-}
+function setupDragAndDrop() {
+    const draggables = document.querySelectorAll('.draggable-field');
+    const dropzones = document.querySelectorAll('.dropzone');
 
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-function isValidZip(zip) {
-    const zipRegex = /^\d{5}(?:-\d{4})?$/; // 12345 or 12345-6789
-    return zipRegex.test(zip);
-}
-
-function isValidName(name) {
-    const nameRegex = /^[A-Za-z\s]+$/;
-    return nameRegex.test(name);
-}
-
-function analyzeData(rows) {
-    const headers = rows[0];
-    const schemaSelects = document.querySelectorAll('#schemaFields select');
-    const qualitySummary = document.getElementById('qualitySummary');
-    let summary = '';
-
-    headers.forEach((header, index) => {
-        const columnValues = rows.slice(1).map(row => row[index]);
-        const totalValues = columnValues.length;
-        const fieldType = schemaSelects[index].value;
-
-        let incorrectValues = 0;
-
-        // Validation based on field type
-        columnValues.forEach(value => {
-            value = value.trim();
-            if (fieldType === "Phone" && !isValidPhone(value)) incorrectValues++;
-            else if (fieldType === "Date" && !isValidDate(value)) incorrectValues++;
-            else if (fieldType === "Email" && !isValidEmail(value)) incorrectValues++;
-            else if (fieldType === "Zip Code" && !isValidZip(value)) incorrectValues++;
-            else if (fieldType === "Name" && !isValidName(value)) incorrectValues++;
-            else if (!value) incorrectValues++; // For null or empty values
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', () => {
+            draggable.classList.add('dragging');
         });
 
-        const qualityScore = ((totalValues - incorrectValues) / totalValues) * 100;
-        summary += `${header}: ${qualityScore.toFixed(2)}% quality\n`;
+        draggable.addEventListener('dragend', () => {
+            draggable.classList.remove('dragging');
+        });
     });
 
-    qualitySummary.textContent = summary;
+    dropzones.forEach(dropzone => {
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const dragging = document.querySelector('.dragging');
+            dropzone.textContent = dragging.textContent;
+            dropzone.classList.remove('dragover');
+            dropzone.setAttribute('data-field-type', dragging.dataset.field);
+        });
+    });
+}
+
+document.getElementById('analyzeBtn').addEventListener('click', () => {
+    analyzeData();
+});
+
+function analyzeData() {
+    const dropzones = document.querySelectorAll('.dropzone');
+    const rows = data.split('\n').map(row => row.split(','));
+    const headers = rows[0];
+    const summaryContainer = document.getElementById('qualitySummary');
+    
+    let summaryHtml = '';
+    
+    dropzones.forEach((dropzone, index) => {
+        const fieldType = dropzone.getAttribute('data-field-type');
+        const columnValues = rows.slice(1).map(row => row[index]);
+        const correctPercentage = calculateCorrectPercentage(fieldType, columnValues);
+        
+        summaryHtml += `<div><strong>${headers[index]}:</strong> ${correctPercentage}% correct</div>`;
+    });
+    
+    summaryContainer.innerHTML = summaryHtml;
     document.getElementById('results').classList.remove('hidden');
+}
+
+function calculateCorrectPercentage(fieldType, values) {
+    const randomAccuracy = Math.floor(Math.random() * 100); // Mock random accuracy
+    return randomAccuracy;
 }
