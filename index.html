@@ -7,20 +7,21 @@
     <title>Data Quality Checker</title>
 </head>
 <body>
-    <div id="app">
+    <div class="container">
         <h1>Data Quality Checker</h1>
-        <div id="dropZone">Drag and drop your CSV file here or click to upload</div>
-        <input type="file" id="fileInput" accept=".csv" style="display: none;">
+        <div id="dropZone" class="drop-zone">
+            <p>Drag and drop a CSV file here or click to upload</p>
+            <input type="file" id="fileInput" accept=".csv" hidden>
+        </div>
         <table id="schemaTable" class="hidden">
             <thead>
                 <tr>
                     <th>Column Name</th>
                     <th>Field Type</th>
-                    <th>Actions</th>
+                    <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
         <button id="confirmButton" class="hidden">Confirm Schema</button>
         <div id="qualityResults" class="hidden">
@@ -29,6 +30,7 @@
             <p id="invalidData"></p>
         </div>
     </div>
+
     <script src="dataQualityCheck.js"></script>
 </body>
 </html>

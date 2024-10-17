@@ -1,46 +1,81 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
 }
 
-#dropZone {
-    width: 100%;
+.container {
+    max-width: 800px;
+    margin: 20px auto;
     padding: 20px;
-    border: 2px dashed #ccc;
-    text-align: center;
-    cursor: pointer;
-    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#dropZone.hover {
-    border-color: #666;
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.drop-zone {
+    border: 2px dashed #007bff;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.drop-zone.hover {
+    background-color: #e7f3ff;
 }
 
 table {
     width: 100%;
+    margin-top: 20px;
     border-collapse: collapse;
-    margin-bottom: 20px;
 }
 
 th, td {
     padding: 10px;
-    border: 1px solid #ccc;
     text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
 }
 
 .hidden {
     display: none;
 }
 
-button {
-    padding: 10px 15px;
-    margin-top: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
+#qualityResults {
+    margin-top: 20px;
 }
 
-button:hover {
-    background-color: #218838;
+#qualityResults p {
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f8f9fa;
 }
