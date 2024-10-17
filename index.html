@@ -40,9 +40,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-        }
-        select {
-            margin-left: 10px;
+            display: none; /* Hide initially */
         }
     </style>
 </head>
@@ -54,7 +52,7 @@
         <input type="file" id="fileElem" accept=".csv">
     </div>
     <div id="summary"></div>
-    <button id="checkBtn" class="btn" style="display:none;">Perform Data Quality Check</button>
+    <button id="checkBtn" class="btn">Perform Data Quality Check</button>
 
     <script>
         const dropArea = document.getElementById('drop-area');
@@ -104,16 +102,14 @@
             const headers = rows[0];
             const data = rows.slice(1);
             displayHeaders(headers);
-            checkBtn.style.display = 'block';
+            checkBtn.style.display = 'block'; // Show the check button
             checkBtn.onclick = () => performDataQualityCheck(headers, data);
         }
 
         function displayHeaders(headers) {
             summaryDiv.innerHTML = `<h2>Detected Columns:</h2>`;
-            const fieldTypes = {};
             headers.forEach(header => {
                 const detectedType = detectFieldType(header);
-                fieldTypes[header] = detectedType; // Store detected types
                 summaryDiv.innerHTML += `
                     <div class="field-status">
                         ${header}:
@@ -143,95 +139,62 @@
                     invalidRows: []
                 };
                 const columnData = data.map(row => row[index]);
-                checkFieldQuality(selectedType, header, columnData, summary[header]);
+                checkFieldQuality(selectedType, columnData, summary[header]);
             });
             displayQualitySummary(summary);
         }
 
-        function checkFieldQuality(type, field, columnData, summary) {
+        function checkFieldQuality(type, columnData, summary) {
             let invalidCount = 0;
-            switch (type) {
-                case 'zip':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const isValid = value.length === 5 && !isNaN(value);
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                case 'date':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const isValid = !isNaN(new Date(value));
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                case 'currency':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const currencyRegex = /^\$?(\d{1,3})(,\d{3})*(\.\d{2})?$/;
-                        const isValid = currencyRegex.test(value);
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                case 'url':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6}|[a-z.-]{2,})\/?$/;
-                        const isValid = urlRegex.test(value);
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                case 'name':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const nameRegex = /^[a-zA-Z\s]+$/;
-                        const isValid = nameRegex.test(value);
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                case 'address':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const addressRegex = /^\d+\s[a-zA-Z\s]+,\s?[a-zA-Z\s]+,\s?[A-Z]{2}\s?\d{5}$/;
-                        const isValid = addressRegex.test(value);
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                case 'age':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const isValid = !isNaN(value) && value >= 0 && value <= 120;
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                case 'time':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-                        const isValid = timeRegex.test(value);
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                case 'percentage':
-                    invalidCount = columnData.filter((value, rowIndex) => {
-                        const percentageRegex = /^(100(\.0{1,2})?|[0-9]{1,2}(\.[0-9]{1,2})?)%?$/;
-                        const isValid = percentageRegex.test(value);
-                        if (!isValid) summary.invalidRows.push(rowIndex + 2);
-                        return !isValid;
-                    }).length;
-                    break;
-                default:
-                    break;
-            }
+            columnData.forEach((value, rowIndex) => {
+                let isValid = true; // Assume valid until proven otherwise
+                switch (type) {
+                    case 'zip':
+                        isValid = value.length === 5 && !isNaN(value);
+                        break;
+                    case 'date':
+                        isValid = !isNaN(new Date(value).getTime());
+                        break;
+                    case 'currency':
+                        isValid = /^\$?(\d{1,3})(,\d{3})*(\.\d{2})?$/.test(value);
+                        break;
+                    case 'url':
+                        isValid = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6}|[a-z.-]{2,})\/?$/.test(value);
+                        break;
+                    case 'name':
+                        isValid = /^[a-zA-Z\s]+$/.test(value);
+                        break;
+                    case 'address':
+                        isValid = /^\d+\s[a-zA-Z\s]+,\s?[a-zA-Z\s]+,\s?[A-Z]{2}\s?\d{5}$/.test(value);
+                        break;
+                    case 'age':
+                        isValid = !isNaN(value) && value >= 0 && value <= 120;
+                        break;
+                    case 'time':
+                        isValid = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value);
+                        break;
+                    case 'percentage':
+                        isValid = /^(100(\.0{1,2})?|[0-9]{1,2}(\.[0-9]{1,2})?)%?$/.test(value);
+                        break;
+                    default:
+                        isValid = false; // Mark as invalid if type is unknown
+                }
+                if (!isValid) {
+                    invalidCount++;
+                    summary.invalidRows.push(rowIndex + 2); // Add 2 to account for header row
+                }
+            });
             summary.validCount = summary.total - invalidCount;
         }
 
         function displayQualitySummary(summary) {
             let resultHtml = `<h2>Data Quality Summary:</h2>`;
             for (const field in summary) {
+                const percentValid = (summary[field].validCount / summary[field].total) * 100 || 0;
                 resultHtml += `
                     <div>
                         <strong>${field}</strong>: Total - ${summary[field].total}, Valid - ${summary[field].validCount}, Invalid - ${summary[field].invalidRows.length}<br>
+                        Quality Score: ${percentValid.toFixed(2)}%<br>
                         Invalid Rows: ${summary[field].invalidRows.join(', ') || 'None'}
                     </div>`;
             }
