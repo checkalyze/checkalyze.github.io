@@ -3,48 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Schema Extractor</title>
+    <title>Dynamic Data Schema Extractor</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .container { max-width: 600px; margin: 50px auto; text-align: center; }
+        .drag-drop-zone {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 50px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .drag-drop-zone.hover { background-color: #e0e7ff; }
+        .drag-drop-zone p { color: #007bff; }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th { background-color: #007bff; color: white; }
     </style>
 </head>
 <body>
-    <h2>Upload a Data File to Get Schema</h2>
-    <input type="file" id="fileInput" accept=".csv" />
-    <table id="schemaTable">
-        <thead>
-            <tr>
-                <th>Column Name</th>
-                <th>Data Type</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div class="container">
+        <h2>Drag & Drop CSV to Get Data Schema</h2>
+        <div id="dropZone" class="drag-drop-zone">
+            <p>Drag & drop your CSV file here, or click to upload</p>
+        </div>
+        <input type="file" id="fileInput" accept=".csv" style="display: none;" />
+        
+        <table id="schemaTable">
+            <thead>
+                <tr>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 
     <script>
-        document.getElementById('fileInput').addEventListener('change', function(event) {
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const tableBody = document.querySelector('#schemaTable tbody');
+
+        // Trigger file upload when clicking drop zone
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Handle drag over event
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZone.classList.add('hover');
+        });
+
+        // Handle drag leave event
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('hover'));
+
+        // Handle drop event
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('hover');
+            const file = event.dataTransfer.files[0];
+            processFile(file);
+        });
+
+        // Handle file input change (in case of manual file selection)
+        fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
-            if (file) {
+            processFile(file);
+        });
+
+        // Function to process the file and display schema
+        function processFile(file) {
+            if (file && file.name.endsWith('.csv')) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = (e) => {
                     const content = e.target.result;
                     const rows = content.split('\n');
                     const headers = rows[0].split(',');
 
-                    const tableBody = document.querySelector('#schemaTable tbody');
-                    tableBody.innerHTML = '';
+                    tableBody.innerHTML = ''; // Clear any previous table content
 
                     headers.forEach(header => {
-                        // Assuming string type for simplicity. You can add logic to detect types.
-                        const row = `<tr><td>${header}</td><td>string</td></tr>`;
+                        const row = `<tr><td>${header.trim()}</td><td>string</td></tr>`;
                         tableBody.innerHTML += row;
                     });
                 };
                 reader.readAsText(file);
+            } else {
+                alert('Please upload a valid CSV file.');
             }
-        });
+        }
     </script>
 </body>
 </html>
