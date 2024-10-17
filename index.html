@@ -4,218 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkalyzer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-        }
-        #dataPreview {
-            margin-top: 20px;
-            font-size: 14px;
-            border-collapse: collapse;
-        }
-        #dataPreview td, #dataPreview th {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        #dataPreview th {
-            background-color: #f2f2f2;
-        }
-        #rowCountMessage {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        #qualityResults {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-        .invalid-row {
-            color: red;
-        }
-    </style>
+    <!-- Adjusted the path to include the repo name -->
+    <link rel="stylesheet" href="/checkalyzer/style.css">
 </head>
 <body>
-    <h1>CSV Data Quality Checker</h1>
-    <input type="file" id="fileInput" />
-    <button onclick="performDataQualityCheck()">Perform Data Quality Check</button>
 
-    <h2>First 5 Rows Preview</h2>
-    <table id="dataPreview"></table>
-    <p id="rowCountMessage"></p> <!-- Row count message -->
-    <div id="qualityResults"></div> <!-- Data quality check results -->
+    <div class="container">
+        <h1>Checkalyzer - Data Quality Checker</h1>
+        <div class="upload-area" id="uploadArea">
+            <p>Drag & Drop your CSV file here or click to upload</p>
+            <input type="file" id="fileInput" accept=".csv">
+        </div>
+        <div id="fileDetails" class="hidden">
+            <h3>Schema Detection</h3>
+            <p id="columnsUploaded"></p>
+            <div id="schemaFields"></div>
+            <button id="analyzeBtn" class="hidden">Analyze Data</button>
+        </div>
+        <div id="results" class="hidden">
+            <h3>Data Quality Summary</h3>
+            <pre id="qualitySummary"></pre>
+        </div>
+    </div>
 
-    <script>
-        let csvData = [];
-
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const text = e.target.result;
-                    csvData = parseCSV(text);
-                    displayFirstFiveRows(csvData);
-                    displayRowCountMessage(csvData);
-                };
-                reader.readAsText(file);
-            }
-        });
-
-        function parseCSV(data) {
-            const rows = data.trim().split('\n');
-            return rows.map(row => row.split(',').map(cell => cell.trim()));
-        }
-
-        function displayFirstFiveRows(data) {
-            const previewTable = document.getElementById('dataPreview');
-            previewTable.innerHTML = ''; // Clear previous content
-
-            const headerRow = document.createElement('tr');
-            data[0].forEach(header => {
-                const th = document.createElement('th');
-                th.textContent = header;
-                headerRow.appendChild(th);
-            });
-            previewTable.appendChild(headerRow);
-
-            const numRows = Math.min(5, data.length - 1); // Show up to 5 rows
-            for (let i = 1; i <= numRows; i++) {
-                const tr = document.createElement('tr');
-                data[i].forEach(cell => {
-                    const td = document.createElement('td');
-                    td.textContent = cell;
-                    tr.appendChild(td);
-                });
-                previewTable.appendChild(tr);
-            }
-        }
-
-        function displayRowCountMessage(data) {
-            const rowCountMessage = document.getElementById('rowCountMessage');
-            const rowCount = data.length - 1; // Subtract 1 for the header row
-            rowCountMessage.textContent = `Successfully loaded ${rowCount} rows of data from the CSV file.`;
-        }
-
-        function performDataQualityCheck() {
-            if (csvData.length === 0) {
-                alert("Please upload a CSV file first.");
-                return;
-            }
-
-            const header = csvData[0];
-            const rows = csvData.slice(1);
-
-            let invalidRows = [];
-            let totalValid = 0;
-
-            rows.forEach((row, index) => {
-                let rowValid = true;
-
-                row.forEach((cell, colIndex) => {
-                    const fieldName = header[colIndex].toLowerCase();
-
-                    if (fieldName.includes('email') && !validateEmail(cell)) {
-                        rowValid = false;
-                    }
-                    if (fieldName.includes('phone') && !validatePhoneNumber(cell)) {
-                        rowValid = false;
-                    }
-                    if (fieldName.includes('currency') && !validateCurrency(cell)) {
-                        rowValid = false;
-                    }
-                    if (fieldName.includes('url') && !validateURL(cell)) {
-                        rowValid = false;
-                    }
-                    if (fieldName.includes('name') && !validateName(cell)) {
-                        rowValid = false;
-                    }
-                    if (fieldName.includes('age') && !validateAge(cell)) {
-                        rowValid = false;
-                    }
-                    if (fieldName.includes('percentage') && !validatePercentage(cell)) {
-                        rowValid = false;
-                    }
-                    if (fieldName.includes('time') && !validateTime(cell)) {
-                        rowValid = false;
-                    }
-                });
-
-                if (!rowValid) {
-                    invalidRows.push(index + 2); // Adding 2 to account for header row and zero-index
-                } else {
-                    totalValid++;
-                }
-            });
-
-            const qualityScore = (totalValid / rows.length) * 100;
-
-            displayQualityResults(qualityScore, invalidRows);
-        }
-
-        function validateEmail(email) {
-            const re = /\S+@\S+\.\S+/;
-            return re.test(email);
-        }
-
-        function validatePhoneNumber(phone) {
-            const re = /^\d{10}$/;
-            return re.test(phone);
-        }
-
-        function validateCurrency(value) {
-            const re = /^\$?[\d,]+(\.\d{2})?$/;
-            return re.test(value);
-        }
-
-        function validateURL(url) {
-            try {
-                new URL(url);
-                return true;
-            } catch (_) {
-                return false;
-            }
-        }
-
-        function validateName(name) {
-            return name.length > 1;
-        }
-
-        function validateAge(age) {
-            const num = parseInt(age, 10);
-            return num > 0 && num < 120;
-        }
-
-        function validatePercentage(value) {
-            const num = parseFloat(value);
-            return num >= 0 && num <= 100;
-        }
-
-        function validateTime(value) {
-            const re = /^([01]\d|2[0-3]):([0-5]\d)$/;
-            return re.test(value);
-        }
-
-        function displayQualityResults(qualityScore, invalidRows) {
-            const qualityResults = document.getElementById('qualityResults');
-            qualityResults.innerHTML = ''; // Clear previous content
-
-            const scoreParagraph = document.createElement('p');
-            scoreParagraph.textContent = `Data Quality Score: ${qualityScore.toFixed(2)}%`;
-            qualityResults.appendChild(scoreParagraph);
-
-            if (invalidRows.length > 0) {
-                const invalidRowsParagraph = document.createElement('p');
-                invalidRowsParagraph.textContent = `Invalid rows found at: ${invalidRows.join(', ')}`;
-                invalidRowsParagraph.classList.add('invalid-row');
-                qualityResults.appendChild(invalidRowsParagraph);
-            } else {
-                const allValidParagraph = document.createElement('p');
-                allValidParagraph.textContent = 'All rows are valid!';
-                qualityResults.appendChild(allValidParagraph);
-            }
-        }
-    </script>
+    <!-- Adjusted the path to include the repo name -->
+    <script src="/checkalyzer/script.js"></script>
 </body>
 </html>

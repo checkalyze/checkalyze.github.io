@@ -1,81 +1,61 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
 }
 
 .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
     text-align: center;
-    color: #333;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-.drop-zone {
+.upload-area {
+    padding: 1rem;
     border: 2px dashed #007bff;
-    padding: 20px;
-    text-align: center;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.drop-zone.hover {
-    background-color: #e7f3ff;
-}
-
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-}
-
-th {
-    background-color: #007bff;
-    color: white;
-}
-
-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #28a745;
-    border: none;
-    color: white;
-    border-radius: 5px;
+    border-radius: 10px;
+    background-color: #e9ecef;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #218838;
+.upload-area p {
+    margin: 0;
+    color: #007bff;
+}
+
+#fileInput {
+    display: none;
 }
 
 .hidden {
     display: none;
 }
 
-#qualityResults {
-    margin-top: 20px;
+#schemaFields {
+    margin-top: 1rem;
 }
 
-#qualityResults p {
-    margin: 5px 0;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #f8f9fa;
+button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#results {
+    margin-top: 2rem;
 }
