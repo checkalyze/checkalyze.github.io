@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+#dropZone {
+    width: 100%;
+    padding: 20px;
+    border: 2px dashed #ccc;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#dropZone.hover {
+    border-color: #666;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
