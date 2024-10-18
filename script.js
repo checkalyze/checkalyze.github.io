@@ -212,6 +212,5 @@ function calculateFieldQuality(fieldType, columnValues) {
         // If no field type is specified, check for null values
         validCount = columnValues.filter(value => value !== undefined && value.trim() !== '').length; // Count non-null values
     }
-
     return { validCount, totalCount };
 }
