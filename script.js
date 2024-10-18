@@ -23,14 +23,14 @@ function processCSV(data) {
     const headers = rows[0];
     const fileDetails = document.getElementById('fileDetails');
     const schemaContainer = document.getElementById('schemaContainer');
-    
+
     // Calculate total rows
     const totalRows = rows.length - 1; // Exclude header row
     document.getElementById('columnsUploaded').innerText = `Columns Detected: ${headers.length}`;
-    
+
     // Create the table for the first five rows
     const firstFiveRowsHtml = createRowsTable(rows.slice(1, 6), headers); // Skip header row
-    
+
     // Display the first five rows table
     document.getElementById('firstFiveRows').innerHTML = firstFiveRowsHtml;
     document.getElementById('totalRows').innerText = `Rows Uploaded: ${totalRows}`;
@@ -132,7 +132,7 @@ function setupDragAndDrop() {
                 dropzone.textContent = 'Drag Field Type'; // Reset text
                 dropzone.style.backgroundColor = '#e0e0e0'; // Reset background color
                 dropzone.style.color = '#000'; // Reset text color
-                 // Prevent the default drag image from being shown
+                // Prevent the default drag image from being shown
                 const img = new Image();  // Create a blank image
                 img.src = '';  // Empty image
                 e.dataTransfer.setDragImage(img, 0, 0);  // Set the blank image as the drag image
@@ -159,8 +159,9 @@ function setupDragAndDrop() {
 }
 
 document.getElementById('analyzeBtn').addEventListener('click', () => {
-    analyzeData();
+    analyzeData(); // Analyze data on each button click
 });
+
 function analyzeData() {
     const dropzones = document.querySelectorAll('.dropzone');
     const rows = data.split('\n').map(row => row.split(','));
@@ -181,6 +182,7 @@ function analyzeData() {
     summaryContainer.innerHTML = summaryHtml;
     document.getElementById('results').classList.remove('hidden');
 }
+
 function calculateFieldQuality(fieldType, columnValues) {
     let validCount = 0;
     const totalCount = columnValues.length;
