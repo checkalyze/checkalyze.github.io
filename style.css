@@ -120,6 +120,13 @@ h1 {
     background-color: #d1eaff;
 }
 
+/* Adding a class to change the color of the dropzone when a field type is applied */
+.dropzone.applied {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+}
+
 /* Results Section */
 #results {
     margin-top: 20px;
@@ -143,4 +150,38 @@ h1 {
 /* Hidden Elements */
 .hidden {
     display: none;
+}
+
+/* Additional styling for applied fields */
+.applied {
+    background-color: #007BFF; /* Same blue color as draggable elements */
+    color: white; /* Keep text color white for contrast */
+    cursor: pointer; /* Indicate that it can be interacted with */
+}
+
+.applied:hover {
+    transform: scale(1.05); /* Slightly scale up on hover */
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Scrollable Table for First Five Rows */
+.scrollable-table {
+    max-width: 100%;
+    overflow-x: auto;
+    margin-bottom: 20px; /* Add some space below the scrollable area */
+    border: 1px solid #ddd; /* Optional: border for better visibility */
+    border-radius: 6px; /* Optional: rounded corners */
+}
+
+/* Ensure the table inside the scrollable area is styled */
+#firstFiveRows table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#firstFiveRows th, 
+#firstFiveRows td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
 }

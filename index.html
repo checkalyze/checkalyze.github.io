@@ -21,10 +21,20 @@
         <div id="fileDetails" class="hidden">
             <h3>Schema Detection</h3>
             <p id="columnsUploaded"></p>
+            <div id="totalRows"></div>
+            <h4>First 5 Rows:</h4>
+            <div id="firstFiveRows" class="scrollable-table"></div>
+                  
+            <!-- Table for Data Preview -->
+            <table id="dataPreview" class="hidden">
+                <thead>
+                    <tr id="tableHeader"></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
 
             <!-- Drag-and-Drop Section -->
             <div class="drag-drop-section">
-                
                 <!-- Left: Available Field Types -->
                 <div class="field-types">
                     <h4>Field Types</h4>
@@ -32,7 +42,8 @@
                     <div class="draggable-field" draggable="true" data-field="Date">Date</div>
                     <div class="draggable-field" draggable="true" data-field="Email">Email</div>
                     <div class="draggable-field" draggable="true" data-field="Zip Code">Zip Code</div>
-                    <div class="draggable-field" draggable="true" data-field="Name">Name</div>
+                    <div class="draggable-field" draggable="true" data-field-type="Alphanumeric Only">Alphanumeric Only</div>
+                    <div class="draggable-field" draggable="true" data-field-type="Numeric Only">Numeric Only</div>
                 </div>
 
                 <!-- Right: Schema with Dropzones for Field Types -->
