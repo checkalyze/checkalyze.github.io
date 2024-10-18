@@ -87,6 +87,8 @@ function detectFieldType(header) {
     if (headerLower.includes('date')) return 'Date';
     if (headerLower.includes('email')) return 'Email';
     if (headerLower.includes('zip')) return 'Zip Code';
+    if (headerLower.includes('name')) return 'Character Only';
+    if (headerLower.includes('number')) return 'Numeric Only';
     // Replace Name detection with Alphanumeric Only
     return null; // No default type applied
 }
@@ -200,6 +202,12 @@ function calculateFieldQuality(fieldType, columnValues) {
             if (value !== undefined) { // Check if value is defined
                 console.log(`Checking value: ${value}`); // Log each value being checked
                 switch (fieldType) {
+                    case 'Character Only':
+                        if (/^[a-zA-Z]+$/.test(value.trim())) validCount++; // Check for characters only
+                        break;
+                    case 'Numeric Only':
+                        if (/^\d+$/.test(value.trim())) validCount++; // Check for numbers only
+                        break;
                     case 'Phone':
                         if (/^\d{10}$/.test(value.trim())) validCount++; // Trim spaces
                         break;
