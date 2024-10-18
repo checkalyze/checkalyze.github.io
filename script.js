@@ -23,7 +23,7 @@ function handleFile(event) {
 }
 
 function processCSV(data) {
-    const rows = data.split('\n').map(row => row.split(','));
+    const rows = parseCSV(data); // Use the new parseCSV function
     const headers = rows[0];
     const fileDetails = document.getElementById('fileDetails');
     const schemaContainer = document.getElementById('schemaContainer');
@@ -55,6 +55,24 @@ function processCSV(data) {
     fileDetails.classList.remove('hidden');
     document.getElementById('analyzeBtn').classList.remove('hidden');
     setupDragAndDrop();
+}
+
+// Function to parse CSV while respecting quoted fields
+function parseCSV(data) {
+    const rows = [];
+    const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g; // Regex to match quoted and unquoted fields
+
+    data.split('\n').forEach(line => {
+        const row = [];
+        let match;
+        while ((match = regex.exec(line)) !== null) {
+            const value = match[0].replace(/(^"|"$)/g, ''); // Remove surrounding quotes
+            row.push(value);
+        }
+        rows.push(row);
+    });
+
+    return rows;
 }
 
 // Function to create the table for the first five rows
