@@ -40,7 +40,7 @@ function processCSV(data) {
             <div class="schema-field">
                 <div class="column-name">${header}</div>
                 <div class="dropzone ${detectedType ? 'applied' : ''}" data-column="${header}" draggable="true">
-                    ${detectedType || 'Drag Field ype'}
+                    ${detectedType || 'Drag Field Type'}
                 </div>
             </div>
         `;
