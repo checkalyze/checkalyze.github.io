@@ -21,9 +21,13 @@ function handleFile(event) {
         reader.readAsText(file);
     }
 }
-
 function processCSV(data) {
-    const rows = parseCSV(data); // Use the new parseCSV function
+    // Use regex to split rows while respecting quotes
+    const rows = data.split('\n').map(row => {
+        const regex = /(?:,|\n)(?=(?:[^"]*"[^"]*")*[^"]*$)/; // Split on commas not inside quotes
+        return row.split(regex).map(cell => cell.replace(/^"|"$/g, '').replace(/\\"/g, '"')); // Remove quotes and unescape
+    });
+
     const headers = rows[0];
     const fileDetails = document.getElementById('fileDetails');
     const schemaContainer = document.getElementById('schemaContainer');
@@ -55,24 +59,6 @@ function processCSV(data) {
     fileDetails.classList.remove('hidden');
     document.getElementById('analyzeBtn').classList.remove('hidden');
     setupDragAndDrop();
-}
-
-// Function to parse CSV while respecting quoted fields
-function parseCSV(data) {
-    const rows = [];
-    const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g; // Regex to match quoted and unquoted fields
-
-    data.split('\n').forEach(line => {
-        const row = [];
-        let match;
-        while ((match = regex.exec(line)) !== null) {
-            const value = match[0].replace(/(^"|"$)/g, ''); // Remove surrounding quotes
-            row.push(value);
-        }
-        rows.push(row);
-    });
-
-    return rows;
 }
 
 // Function to create the table for the first five rows
