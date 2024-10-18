@@ -12,13 +12,47 @@ h1 {
     font-size: 2em;
 }
 
+/* Field Types Section */
+.field-types {
+    width: 250px; /* Fixed width for the field types */
+    background-color: #f7f7f7;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: absolute; /* Position it outside of the flow */
+    left: 20px; /* Adjust to fit your layout */
+    top: 770px; /* Adjust vertical positioning if necessary */
+}
+
+.field-types h4 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.draggable-field {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    text-align: center;
+    cursor: grab;
+    transition: transform 0.2s ease;
+}
+
+.draggable-field:hover {
+    transform: scale(1.05);
+}
+
 .container {
-    max-width: 900px;
+    max-width: 900px;  /* Ensure everything stays within 900px */
     margin: 0 auto;
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-x: hidden;  /* Prevent content from spilling out horizontally */
 }
 
 /* File Upload Section */
@@ -45,70 +79,57 @@ h1 {
 /* Schema Detection and Field Types Section */
 .drag-drop-section {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     margin-top: 20px;
 }
 
-/* Left: Field Types Section */
-.field-types {
-    width: 30%;
-    background-color: #f7f7f7;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.field-types h4 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.draggable-field {
-    background-color: #007BFF;
-    color: white;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    text-align: center;
-    cursor: grab;
-    transition: transform 0.2s ease;
-}
-
-.draggable-field:hover {
-    transform: scale(1.05);
-}
-
-/* Right: Schema Section */
+/* Schema Section */
 .schema-section {
-    width: 65%;
-    padding: 20px;
+    max-width: 100%; /* Ensure it fits within the parent container */
+    padding: 15px;
     background-color: #f7f7f7;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow-x: hidden; /* Prevent any overflow in the schema */
 }
 
-.schema-section h4 {
-    margin-bottom: 10px;
-}
-
-#schemaContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+/* Horizontal schema container */
+.schema-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto; /* Keep schema scrollable horizontally */
+    white-space: nowrap;
+    padding: 10px;
+    border: 1px solid #ccc;
+    width: 100%; /* Constrain the schema to the container's width */
+    box-sizing: border-box; /* Ensure padding is included in width */
 }
 
 .schema-field {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: flex-start;
+    align-items: center; /* Center items horizontally */
     padding: 10px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 6px;
+    min-width: 150px;
+    margin-right: 10px;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+.schema-field .column-name {
+    font-weight: bold;
+    margin-bottom: 10px; /* Adds space between column name and dropzone */
+    text-align: center; /* Center the column name */
+    width: 100%; /* Ensure the column name takes full width */
 }
 
 .dropzone {
-    width: 60%;
-    padding: 10px;
+    width: 100%; /* Make the dropzone take full width */
+    padding: 5px;
     background-color: #e0e0e0;
     border: 2px dashed #007BFF;
     text-align: center;
@@ -166,16 +187,17 @@ h1 {
 
 /* Scrollable Table for First Five Rows */
 .scrollable-table {
-    max-width: 100%;
+    max-width: 100%; /* Ensure it stays within the container */
     overflow-x: auto;
     margin-bottom: 20px; /* Add some space below the scrollable area */
     border: 1px solid #ddd; /* Optional: border for better visibility */
     border-radius: 6px; /* Optional: rounded corners */
+    box-sizing: border-box; /* Ensures padding doesn't break width */
 }
 
 /* Ensure the table inside the scrollable area is styled */
 #firstFiveRows table {
-    width: 100%;
+    width: 100%; /* Full width */
     border-collapse: collapse;
 }
 

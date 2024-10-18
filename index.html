@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkalyzer</title>
-    <link rel="stylesheet" href="/checkalyzer/style.css">
+    <link rel="stylesheet" href="checkalyzer/style.css">
 </head>
 <body>
-
+  
     <div class="container">
         <h1>Checkalyzer - Data Quality Checker</h1>
         
@@ -33,24 +33,21 @@
                 <tbody id="tableBody"></tbody>
             </table>
 
-            <!-- Drag-and-Drop Section -->
-            <div class="drag-drop-section">
-                <!-- Left: Available Field Types -->
-                <div class="field-types">
-                    <h4>Field Types</h4>
-                    <div class="draggable-field" draggable="true" data-field="Phone">Phone</div>
-                    <div class="draggable-field" draggable="true" data-field="Date">Date</div>
-                    <div class="draggable-field" draggable="true" data-field="Email">Email</div>
-                    <div class="draggable-field" draggable="true" data-field="Zip Code">Zip Code</div>
-                    <div class="draggable-field" draggable="true" data-field-type="Alphanumeric Only">Alphanumeric Only</div>
-                    <div class="draggable-field" draggable="true" data-field-type="Numeric Only">Numeric Only</div>
-                </div>
+            <!-- Schema Section -->
+            <div class="schema-section">
+                <h3>Schema</h3>
+                <div id="schemaContainer" class="schema-container"></div>
+            </div>
 
-                <!-- Right: Schema with Dropzones for Field Types -->
-                <div id="schemaFields" class="schema-section">
-                    <h4>Schema</h4>
-                    <div id="schemaContainer"></div>
-                </div>
+            <!-- Field Types Section: Under Schema -->
+            <div class="field-types">
+                <h4>Field Types</h4>
+                <div class="draggable-field" draggable="true" data-field="Phone">Phone</div>
+                <div class="draggable-field" draggable="true" data-field="Date">Date</div>
+                <div class="draggable-field" draggable="true" data-field="Email">Email</div>
+                <div class="draggable-field" draggable="true" data-field="Zip Code">Zip Code</div>
+                <div class="draggable-field" draggable="true" data-field="Alphanumeric Only">Alphanumeric Only</div>
+                <div class="draggable-field" draggable="true" data-field="Numeric Only">Numeric Only</div>
             </div>
 
             <!-- Button to Perform Data Analysis -->
@@ -64,6 +61,6 @@
         </div>
     </div>
 
-    <script src="/checkalyzer/script.js"></script>
+    <script src="checkalyzer/script.js"></script>
 </body>
 </html>

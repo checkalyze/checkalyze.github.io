@@ -31,7 +31,7 @@ function processCSV(data) {
     
     // Display the first five rows table
     document.getElementById('firstFiveRows').innerHTML = firstFiveRowsHtml;
-    document.getElementById('totalRows').innerText = `Rows Uploaded: ${totalRows}`;
+    document.getElementById('totalRows').innerText = ` Rows Uploaded: ${totalRows}`;
 
     // Set up the schema display
     schemaContainer.innerHTML = headers.map(header => {
@@ -40,7 +40,7 @@ function processCSV(data) {
             <div class="schema-field">
                 <div class="column-name">${header}</div>
                 <div class="dropzone ${detectedType ? 'applied' : ''}" data-column="${header}" draggable="true">
-                    ${detectedType || 'Drag field type here'}
+                    ${detectedType || 'Drag Field ype'}
                 </div>
             </div>
         `;
@@ -128,7 +128,7 @@ function setupDragAndDrop() {
         dropzone.addEventListener('dragstart', (e) => {
             if (dropzone.classList.contains('applied')) {
                 dropzone.classList.remove('applied'); // Remove applied class on drag
-                dropzone.textContent = 'Drag field type here'; // Reset text
+                dropzone.textContent = 'Drag Field Type'; // Reset text
                 dropzone.style.backgroundColor = '#e0e0e0'; // Reset background color
                 dropzone.style.color = '#000'; // Reset text color
                  // Prevent the default drag image from being shown
@@ -147,7 +147,7 @@ function setupDragAndDrop() {
             const draggedType = e.dataTransfer.getData('text/plain');
             if (draggedType) {
                 // Reset text and attributes when dragged out
-                dropzone.textContent = 'Drag field type here'; // Reset text
+                dropzone.textContent = 'Drag Field Type here'; // Reset text
                 dropzone.removeAttribute('data-field-type'); // Remove the field type attribute
                 dropzone.style.backgroundColor = '#e0e0e0'; // Set background to gray
                 dropzone.style.color = '#000'; // Set text color to black
