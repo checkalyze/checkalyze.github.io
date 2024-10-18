@@ -147,7 +147,7 @@ function setupDragAndDrop() {
             const draggedType = e.dataTransfer.getData('text/plain');
             if (draggedType) {
                 // Reset text and attributes when dragged out
-                dropzone.textContent = 'Drag Field Type here'; // Reset text
+                dropzone.textContent = 'Drag Field Type'; // Reset text
                 dropzone.removeAttribute('data-field-type'); // Remove the field type attribute
                 dropzone.style.backgroundColor = '#e0e0e0'; // Set background to gray
                 dropzone.style.color = '#000'; // Set text color to black
