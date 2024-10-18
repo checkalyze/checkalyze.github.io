@@ -7,6 +7,10 @@ document.getElementById('uploadArea').addEventListener('click', () => {
 document.getElementById('fileInput').addEventListener('change', handleFile);
 
 function handleFile(event) {
+    // Clear old data and summary
+    data = ''; // Clear the data variable
+    document.getElementById('qualitySummary').innerHTML = ''; // Clear the old summary
+
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
