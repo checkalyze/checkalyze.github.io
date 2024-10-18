@@ -87,8 +87,7 @@ function detectFieldType(header) {
     if (headerLower.includes('date')) return 'Date';
     if (headerLower.includes('email')) return 'Email';
     if (headerLower.includes('zip')) return 'Zip Code';
-    if (headerLower.includes('name')) return 'Character Only';
-    if (headerLower.includes('id') || headerLower.includes('number')) return 'Numeric Only';
+    // Replace Name detection with Alphanumeric Only
     return null; // No default type applied
 }
 
@@ -213,18 +212,15 @@ function calculateFieldQuality(fieldType, columnValues) {
                     case 'Zip Code':
                         if (/^\d{5}(-\d{4})?$/.test(value.trim())) validCount++;
                         break;
-                    case 'Character Only':
-                        if (/^[a-zA-Z]+$/.test(value.trim())) validCount++; // Check for characters only
-                        break;
-                    case 'Numeric Only':
-                        if (/^\d+$/.test(value.trim())) validCount++; // Check for numbers only
-                        break;
+                    // Add other cases for different field types here
                     default:
-                        console.log(`No validation logic for field type: ${fieldType}`);
+                        break;
                 }
             }
         });
+    } else {
+        // If no field type is specified, check for null values
+        validCount = columnValues.filter(value => value !== undefined && value.trim() !== '').length; // Count non-null values
     }
-
     return { validCount, totalCount };
 }
