@@ -22,7 +22,7 @@ h1 {
     margin-bottom: 20px;
     position: absolute; /* Position it outside of the flow */
     left: 20px; /* Adjust to fit your layout */
-    top: 690px; /* Adjust vertical positioning if necessary */
+    top: 700px; /* Adjust vertical positioning if necessary */
 }
 
 .field-types h4 {
