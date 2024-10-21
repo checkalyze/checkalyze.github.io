@@ -172,6 +172,8 @@ document.getElementById('analyzeBtn').addEventListener('click', () => {
     analyzeData(); // Analyze data on each button click
 });
 
+let columnQualityData = {};  // Object to store quality data for each column
+
 function analyzeData() {
     const dropzones = document.querySelectorAll('.dropzone');
     const rows = data.split('\n').map(row => row.split(','));
@@ -183,9 +185,18 @@ function analyzeData() {
     dropzones.forEach((dropzone, index) => {
         const fieldType = dropzone.getAttribute('data-field-type');
         const columnValues = rows.slice(1).map(row => row[index]);
-        console.log(`Field Type: ${fieldType}, Values: ${columnValues}`); // Log values for debugging
-        const { validCount, totalCount } = calculateFieldQuality(fieldType, columnValues);
+        
+        // Call calculateFieldQuality to get valid and invalid rows
+        const { validCount, totalCount, invalidRows } = calculateFieldQuality(fieldType, columnValues);
         const correctPercentage = ((validCount / totalCount) * 100).toFixed(2);
+
+        // Store the quality data for this column in the object
+        columnQualityData[headers[index]] = {
+            validCount: validCount,
+            invalidRows: invalidRows,  // Store invalid rows
+            totalCount: totalCount,
+            correctPercentage: correctPercentage
+        };
 
         // Create a button element within each div with an onclick event
         summaryHtml += `<button class="summary-button" type="button" onclick="showDetail('${headers[index]}', ${correctPercentage})">
@@ -197,9 +208,19 @@ function analyzeData() {
     document.getElementById('results').classList.remove('hidden');
 }
 
+
 function showDetail(header, percentage) {
+    const columnData = columnQualityData[header];
+    let modalText = `Validity: ${percentage}%\n`;
+    
+    if (columnData.invalidRows.length > 0) {
+        modalText += `Invalid rows: ${columnData.invalidRows.join(', ')}`;
+    } else {
+        modalText += 'No invalid rows.';
+    }
+
     document.getElementById('modalHeader').innerText = header;
-    document.getElementById('modalText').innerText = `Validity: ${percentage}%`;
+    document.getElementById('modalText').innerText = modalText;
     document.getElementById('myModal').style.display = "block";
 }
 
@@ -215,33 +236,56 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-
 function calculateFieldQuality(fieldType, columnValues) {
     let validCount = 0;
     const totalCount = columnValues.length;
+    const invalidRows = [];  // Array to store invalid rows
 
     if (fieldType) {
-        columnValues.forEach(value => {
+        columnValues.forEach((value, rowIndex) => {
             if (value !== undefined) { // Check if value is defined
-                console.log(`Checking value: ${value}`); // Log each value being checked
                 switch (fieldType) {
                     case 'Characters Only':
-                        if (/^[a-zA-Z]+$/.test(value.trim())) validCount++; // Check for characters only
+                        if (/^[a-zA-Z]+$/.test(value.trim())) {
+                            validCount++;
+                        } else {
+                            invalidRows.push(rowIndex + 1);  // Store row index of invalid rows
+                        }
                         break;
                     case 'Numeric Only':
-                        if (/^\d+$/.test(value.trim())) validCount++; // Check for numbers only
+                        if (/^\d+$/.test(value.trim())) {
+                            validCount++;
+                        } else {
+                            invalidRows.push(rowIndex + 1);
+                        }
                         break;
                     case 'Phone':
-                        if (/^\d{10}$/.test(value.trim())) validCount++; // Trim spaces
+                        if (/^\d{10}$/.test(value.trim())) {
+                            validCount++;
+                        } else {
+                            invalidRows.push(rowIndex + 1);
+                        }
                         break;
                     case 'Date':
-                        if (!isNaN(Date.parse(value))) validCount++;
+                        if (!isNaN(Date.parse(value))) {
+                            validCount++;
+                        } else {
+                            invalidRows.push(rowIndex + 1);
+                        }
                         break;
                     case 'Email':
-                        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) validCount++; // Trim spaces
+                        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+                            validCount++;
+                        } else {
+                            invalidRows.push(rowIndex + 1);
+                        }
                         break;
                     case 'Zip Code':
-                        if (/^\d{5}(-\d{4})?$/.test(value.trim())) validCount++;
+                        if (/^\d{5}(-\d{4})?$/.test(value.trim())) {
+                            validCount++;
+                        } else {
+                            invalidRows.push(rowIndex + 1);
+                        }
                         break;
                     // Add other cases for different field types here
                     default:
@@ -250,8 +294,19 @@ function calculateFieldQuality(fieldType, columnValues) {
             }
         });
     } else {
-        // If no field type is specified, check for null values
-        validCount = columnValues.filter(value => value !== undefined && value.trim() !== '').length; // Count non-null values
+            // If no field type is specified, check for null/undefined values
+    validCount = columnValues.filter(value => value !== undefined && value !== null && value.trim() !== '').length;
+
+    invalidRows.push(...columnValues.map((value, rowIndex) => {
+        // Check if the value is undefined or empty after trimming
+        if (value === undefined || value === null || value.trim() === '') {
+            return rowIndex + 1; // Return 1-based row index for invalid rows
+        }
+        return null; // Valid value, return null
+    }).filter(row => row !== null)); // Filter out null values from the invalid row list
+
     }
-    return { validCount, totalCount };
+
+    return { validCount, totalCount, invalidRows };
 }
+
