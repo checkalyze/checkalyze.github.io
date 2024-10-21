@@ -54,13 +54,20 @@
             <button id="analyzeBtn" class="hidden">Analyze Data</button>
         </div>
 
-        <!-- Results Section -->
-        <div id="results" class="hidden">
-            <h3>Data Quality Summary</h3>
-            <div id="qualitySummary" class="horizontal-summary"></div>
-            <h4>*checks for nulls and supported field types</h4>
-        </div>
-    </div>
+            <!-- Results Section -->
+            <div id="results" class="hidden">
+                <h3>Data Quality Summary</h3>
+                <div id="qualitySummary" class="horizontal-summary"></div>
+                <h4>*checks for nulls and supported field types validity</h4>
+            </div>
+                
+                <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2 id="modalHeader"></h2>
+                    <p id="modalText"></p>
+                </div>
+            </div>
 
     <script src="/script.js"></script>
 </body>

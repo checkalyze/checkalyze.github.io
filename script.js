@@ -186,11 +186,34 @@ function analyzeData() {
         console.log(`Field Type: ${fieldType}, Values: ${columnValues}`); // Log values for debugging
         const { validCount, totalCount } = calculateFieldQuality(fieldType, columnValues);
         const correctPercentage = ((validCount / totalCount) * 100).toFixed(2);
-        summaryHtml += `<div><strong>${headers[index]}:</strong> ${correctPercentage}% valid</div>`;
+
+        // Create a button element within each div with an onclick event
+        summaryHtml += `<button class="summary-button" type="button" onclick="showDetail('${headers[index]}', ${correctPercentage})">
+                            <strong>${headers[index]}:</strong> ${correctPercentage}% valid
+                        </button>`;
     });
 
     summaryContainer.innerHTML = summaryHtml;
     document.getElementById('results').classList.remove('hidden');
+}
+
+function showDetail(header, percentage) {
+    document.getElementById('modalHeader').innerText = header;
+    document.getElementById('modalText').innerText = `Validity: ${percentage}%`;
+    document.getElementById('myModal').style.display = "block";
+}
+
+// Function to close the modal
+function closeModal() {
+    document.getElementById('myModal').style.display = "none";
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('myModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }
 
 function calculateFieldQuality(fieldType, columnValues) {
