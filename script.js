@@ -7,10 +7,20 @@ document.getElementById('uploadArea').addEventListener('click', () => {
 document.getElementById('fileInput').addEventListener('change', handleFile);
 
 function handleFile(event) {
-    // Clear old data and summary
-    data = ''; // Clear the data variable
     document.getElementById('qualitySummary').innerHTML = ''; // Clear the old summary
 
+    const fileInput = document.getElementById('fileInput'); // Update with your file input ID
+
+    // Create a new file input element to trigger change
+    const newFileInput = document.createElement('input');
+    newFileInput.type = 'file';
+    newFileInput.id = 'fileInput';
+    newFileInput.addEventListener('change', handleFile); // Re-attach the event listener
+
+    // Replace the old file input with the new one
+    fileInput.parentNode.replaceChild(newFileInput, fileInput);
+    
+  
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
@@ -20,7 +30,12 @@ function handleFile(event) {
         };
         reader.readAsText(file);
     }
+    document.getElementById('analyzeBtn').classList.remove('hidden');
+    document.getElementById('analyzeBtn').disabled = false; // Enable the button again
+    document.getElementById('uploadMessage').classList.add('hidden'); // Hide upload message
+    document.getElementById('results').classList.add('hidden'); // Hide upload message
 }
+
 function processCSV(data) {
     // Use regex to split rows while respecting quotes
     const rows = data.split('\n').map(row => {
@@ -46,10 +61,11 @@ function processCSV(data) {
     // Set up the schema display
     schemaContainer.innerHTML = headers.map(header => {
         const detectedType = detectFieldType(header);
+      
         return `
             <div class="schema-field">
                 <div class="column-name">${header}</div>
-                <div class="dropzone ${detectedType ? 'applied' : ''}" data-column="${header}" draggable="true">
+                <div class="dropzone ${detectedType ? 'applied' : ''}" data-column="${header}" draggable="true" data-field-type="${detectedType || ''}">
                     ${detectedType || 'Drag Field Type'}
                 </div>
             </div>
@@ -57,9 +73,9 @@ function processCSV(data) {
     }).join('');
 
     fileDetails.classList.remove('hidden');
-    document.getElementById('analyzeBtn').classList.remove('hidden');
     setupDragAndDrop();
 }
+
 
 // Function to create the table for the first five rows
 function createRowsTable(rows, headers) {
@@ -140,6 +156,7 @@ function setupDragAndDrop() {
             if (dropzone.classList.contains('applied')) {
                 dropzone.classList.remove('applied'); // Remove applied class on drag
                 dropzone.textContent = 'Drag Field Type'; // Reset text
+                dropzone.removeAttribute('data-field-type'); // Remove the field type attribute
                 dropzone.style.backgroundColor = '#e0e0e0'; // Reset background color
                 dropzone.style.color = '#000'; // Reset text color
                 // Prevent the default drag image from being shown
@@ -168,32 +185,41 @@ function setupDragAndDrop() {
     });
 }
 
+
 document.getElementById('analyzeBtn').addEventListener('click', () => {
     analyzeData(); // Analyze data on each button click
+    // Show the upload message
+    document.getElementById('analyzeBtn').disabled = true;
+  document.getElementById('uploadMessage').classList.remove('hidden');
 });
 
 let columnQualityData = {};  // Object to store quality data for each column
 
 function analyzeData() {
+    //let columnQualityData = {};  // Object to store quality data for each column
     const dropzones = document.querySelectorAll('.dropzone');
     const rows = data.split('\n').map(row => row.split(','));
     const headers = rows[0];
     const summaryContainer = document.getElementById('qualitySummary');
-
     let summaryHtml = '';
 
     dropzones.forEach((dropzone, index) => {
         const fieldType = dropzone.getAttribute('data-field-type');
         const columnValues = rows.slice(1).map(row => row[index]);
         
-        // Call calculateFieldQuality to get valid and invalid rows
-        const { validCount, totalCount, invalidRows } = calculateFieldQuality(fieldType, columnValues);
-        const correctPercentage = ((validCount / totalCount) * 100).toFixed(2);
+        // Check if columnValues are available
+        if (columnValues.length === 0) return; // Skip if no values
+
+        // Pass all rows to calculateFieldQuality to get valid and invalid rows
+        const { validCount, totalCount, invalidRows } = calculateFieldQuality(fieldType, columnValues, rows);
+        
+        // Check for total count to avoid division by zero
+        const correctPercentage = totalCount > 0 ? ((validCount / totalCount) * 100).toFixed(2) : 0;
 
         // Store the quality data for this column in the object
         columnQualityData[headers[index]] = {
             validCount: validCount,
-            invalidRows: invalidRows,  // Store invalid rows
+            invalidRows: invalidRows,  // Store invalid rows (index + data)
             totalCount: totalCount,
             correctPercentage: correctPercentage
         };
@@ -213,16 +239,45 @@ function showDetail(header, percentage) {
     const columnData = columnQualityData[header];
     let modalText = `Validity: ${percentage}%\n`;
     
+    // Create a scrollable table
+    let tableHtml = `
+        <div class="table-container" style="width: 100%; overflow-x: auto;">
+            <table border="1" style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <th>Row Number</th>
+    `;
+
+    // Add column headers from the main dataset
+    const headers = Object.keys(columnQualityData); // Assuming all headers are keys in columnQualityData
+    headers.forEach(colHeader => {
+        tableHtml += `<th>${colHeader}</th>`;
+    });
+    tableHtml += '</tr>';
+    
     if (columnData.invalidRows.length > 0) {
-        modalText += `Invalid rows: ${columnData.invalidRows.join(', ')}`;
+        columnData.invalidRows.forEach(rowInfo => {
+            tableHtml += '<tr>';
+            tableHtml += `<td>${rowInfo.rowIndex}</td>`; // Add the row number
+            
+            rowInfo.rowData.forEach(data => {
+                tableHtml += `<td>${data !== undefined && data !== null ? data : ''}</td>`; // Show empty if data is null or undefined
+            });
+            tableHtml += '</tr>';
+        });
     } else {
         modalText += 'No invalid rows.';
     }
 
+    tableHtml += '</table></div>'; // Close the div container
+    
     document.getElementById('modalHeader').innerText = header;
-    document.getElementById('modalText').innerText = modalText;
+    document.getElementById('modalText').innerHTML = modalText + tableHtml; // Use innerHTML to include the table
     document.getElementById('myModal').style.display = "block";
 }
+
+
+
+
 
 // Function to close the modal
 function closeModal() {
@@ -237,77 +292,52 @@ window.onclick = function(event) {
     }
 }
 
-function calculateFieldQuality(fieldType, columnValues) {
-    let validCount = 0;
+function calculateFieldQuality(fieldType, columnValues, allRows) {
     const totalCount = columnValues.length;
-    const invalidRows = [];  // Array to store invalid rows
+    const invalidRows = []; // Array to store invalid row data (index + full row)
+    let validCount = 0;
 
-    if (fieldType) {
-        columnValues.forEach((value, rowIndex) => {
-            if (value !== undefined) { // Check if value is defined
-                switch (fieldType) {
-                    case 'Characters Only':
-                        if (/^[a-zA-Z]+$/.test(value.trim())) {
-                            validCount++;
-                        } else {
-                            invalidRows.push(rowIndex + 1);  // Store row index of invalid rows
-                        }
-                        break;
-                    case 'Numeric Only':
-                        if (/^\d+$/.test(value.trim())) {
-                            validCount++;
-                        } else {
-                            invalidRows.push(rowIndex + 1);
-                        }
-                        break;
-                    case 'Phone':
-                        if (/^\d{10}$/.test(value.trim())) {
-                            validCount++;
-                        } else {
-                            invalidRows.push(rowIndex + 1);
-                        }
-                        break;
-                    case 'Date':
-                        if (!isNaN(Date.parse(value))) {
-                            validCount++;
-                        } else {
-                            invalidRows.push(rowIndex + 1);
-                        }
-                        break;
-                    case 'Email':
-                        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
-                            validCount++;
-                        } else {
-                            invalidRows.push(rowIndex + 1);
-                        }
-                        break;
-                    case 'Zip Code':
-                        if (/^\d{5}(-\d{4})?$/.test(value.trim())) {
-                            validCount++;
-                        } else {
-                            invalidRows.push(rowIndex + 1);
-                        }
-                        break;
-                    // Add other cases for different field types here
-                    default:
-                        break;
-                }
+    columnValues.forEach((value, rowIndex) => {
+        let isValid = true; // Assume valid until proven otherwise
+
+        // Check for null or undefined values first
+        if (value === null || value === undefined || value.trim() === '') {
+            isValid = false; // Null, undefined, or empty values are invalid
+        } else if (fieldType) {
+            // Validate based on the specified field type
+            switch (fieldType) {
+                case 'Characters Only':
+                    isValid = /^[A-Za-z\s,]+$/.test(value.trim());
+                    break;
+                case 'Numeric Only':
+                    isValid = /^\d+$/.test(value.trim());
+                    break;
+                case 'Phone':
+                    isValid = /^\d{10}$/.test(value.trim());
+                    break;
+                case 'Date':
+                    isValid = !isNaN(Date.parse(value));
+                    break;
+                case 'Email':
+                    isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+                    break;
+                case 'Zip Code':
+                    isValid = /^\d{5}(-\d{4})?$/.test(value.trim());
+                    break;
+                // Add other cases for different field types here
+                default:
+                    isValid = false; // If an unrecognized field type is provided, consider it invalid
+                    break;
             }
-        });
-    } else {
-            // If no field type is specified, check for null/undefined values
-    validCount = columnValues.filter(value => value !== undefined && value !== null && value.trim() !== '').length;
-
-    invalidRows.push(...columnValues.map((value, rowIndex) => {
-        // Check if the value is undefined or empty after trimming
-        if (value === undefined || value === null || value.trim() === '') {
-            return rowIndex + 1; // Return 1-based row index for invalid rows
         }
-        return null; // Valid value, return null
-    }).filter(row => row !== null)); // Filter out null values from the invalid row list
 
-    }
+        // Push invalid rows if the value is invalid (either null or failed field type check)
+        if (!isValid) {
+            invalidRows.push({ rowIndex: rowIndex + 1, rowData: allRows[rowIndex + 1] }); // Store row index + row data
+        } else {
+            validCount++; // Count valid entries
+        }
+    });
 
     return { validCount, totalCount, invalidRows };
 }
-
