@@ -20,10 +20,10 @@
 
         <!-- Schema and Field Types Section -->
         <div id="fileDetails" class="hidden">
-            <h3>Schema Detection</h3>
+            <!-- <h2>Schema Detected</h2> -->
             <p id="columnsUploaded"></p>
             <div id="totalRows"></div>
-            <h4>First 5 Rows:</h4>
+            <h3>First 5 Rows View:</h3>
             <div id="firstFiveRows" class="scrollable-table"></div>
                   
             <!-- Table for Data Preview -->
@@ -36,7 +36,7 @@
 
             <!-- Schema Section -->
             <div class="schema-section">
-                <h3>Schema</h3>
+                <h3>Schema Detected</h3>
                 <div id="schemaContainer" class="schema-container"></div>
             </div>
 
@@ -53,14 +53,14 @@
 
             <!-- Button to Perform Data Analysis -->
             <button id="analyzeBtn" class="hidden">Analyze Data</button>
-          <span id="uploadMessage" class="hidden">Analysis Complete. Please upload new data to analyze.</span>
+          <span id="uploadMessage" class="hidden"><br><br>Analysis Complete. <br>Upload new data to analyze</span>
         </div>
 
             <!-- Results Section -->
             <div id="results" class="hidden">
                 <h3>Data Quality Summary</h3>
                 <div id="qualitySummary" class="horizontal-summary"></div>
-                <p>*checks for nulls and supported field types validity</p>
+                <p>*checks valid supported field types and nulls</p>
             </div>
                 
                 <div id="myModal" class="modal">
