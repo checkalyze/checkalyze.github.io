@@ -222,6 +222,21 @@ h1 {
     box-sizing: border-box; /* Ensures padding doesn't break width */
 }
 
+.table-container {
+    width: 100%; /* Allow the container to fill the modal */
+    overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+table {
+    width: 100%; /* Table takes full width of the container */
+    border-collapse: collapse; /* Collapse borders for better styling */
+}
+
+th, td {
+    padding: 8px; /* Add some padding for better readability */
+    text-align: left; /* Align text to the left */
+}
+
 /* Ensure the table inside the scrollable area is styled */
 #firstFiveRows table {
     width: 100%; /* Full width */

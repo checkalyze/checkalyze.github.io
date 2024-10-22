@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkalyzer</title>
-    <link rel="icon" href="/image.png">
+    <link rel="icon" href="http://example.com/favicon.png">
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -41,7 +41,7 @@
             </div>
 
             <!-- Field Types Section: Under Schema -->
-            <div class="field-types">
+            <div class="field-types" draggable="true">
                 <h4>Supported Field Types</h4>
                 <div class="draggable-field" draggable="true" data-field="Phone">Phone</div>
                 <div class="draggable-field" draggable="true" data-field="Date">Date</div>
@@ -53,13 +53,14 @@
 
             <!-- Button to Perform Data Analysis -->
             <button id="analyzeBtn" class="hidden">Analyze Data</button>
+          <span id="uploadMessage" class="hidden">Analysis Complete. Please upload new data to analyze.</span>
         </div>
 
             <!-- Results Section -->
             <div id="results" class="hidden">
                 <h3>Data Quality Summary</h3>
                 <div id="qualitySummary" class="horizontal-summary"></div>
-                <h4>*checks for nulls and supported field types validity</h4>
+                <p>*checks for nulls and supported field types validity</p>
             </div>
                 
                 <div id="myModal" class="modal">
