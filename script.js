@@ -188,9 +188,9 @@ function setupDragAndDrop() {
 
 document.getElementById('analyzeBtn').addEventListener('click', () => {
     analyzeData(); // Analyze data on each button click
+    //document.getElementById('analyzeBtn').disabled = true;
     // Show the upload message
-    document.getElementById('analyzeBtn').disabled = true;
-  document.getElementById('uploadMessage').classList.remove('hidden');
+    document.getElementById('uploadMessage').classList.remove('hidden');
 });
 
 let columnQualityData = {};  // Object to store quality data for each column
