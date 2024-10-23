@@ -49,7 +49,7 @@ function processCSV(data) {
 
     // Calculate total rows
     const totalRows = rows.length - 1; // Exclude header row
-    document.getElementById('columnsUploaded').innerText = `Columns Detected: ${headers.length}`;
+    document.getElementById('columnsUploaded').innerText = `Schema Fields Detected: ${headers.length}`;
 
     // Create the table for the first five rows
     const firstFiveRowsHtml = createRowsTable(rows.slice(1, 6), headers); // Skip header row
@@ -307,7 +307,7 @@ function calculateFieldQuality(fieldType, columnValues, allRows) {
             // Validate based on the specified field type
             switch (fieldType) {
                 case 'Characters Only':
-                    isValid = /^[A-Za-z\s'-]+$/.test(value.trim());
+                    isValid = /^[A-Za-z\s,'-]+$/.test(value.trim());
                     break;
                 case 'Numeric Only':
                     isValid = /^\d+$/.test(value.trim());
