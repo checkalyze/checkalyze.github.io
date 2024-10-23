@@ -52,10 +52,10 @@ function processCSV(data) {
     document.getElementById('columnsUploaded').innerText = `Schema Fields Detected: ${headers.length}`;
 
     // Create the table for the first five rows
-    const firstFiveRowsHtml = createRowsTable(rows.slice(1, 6), headers); // Skip header row
+    const firstThreeRowsHtml = createRowsTable(rows.slice(1, 4), headers); // Skip header row
 
-    // Display the first five rows table
-    document.getElementById('firstFiveRows').innerHTML = firstFiveRowsHtml;
+    // Display the first three rows table
+    document.getElementById('firstThreeRows').innerHTML = firstThreeRowsHtml;
     document.getElementById('totalRows').innerText = `Rows Uploaded: ${totalRows}`;
 
     // Set up the schema display
