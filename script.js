@@ -307,7 +307,7 @@ function calculateFieldQuality(fieldType, columnValues, allRows) {
             // Validate based on the specified field type
             switch (fieldType) {
                 case 'Characters Only':
-                    isValid = /^[A-Za-z\s,]+$/.test(value.trim());
+                    isValid = /^[A-Za-z\s'-]+$/.test(value.trim());
                     break;
                 case 'Numeric Only':
                     isValid = /^\d+$/.test(value.trim());
