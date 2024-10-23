@@ -188,8 +188,8 @@ function setupDragAndDrop() {
 
 document.getElementById('analyzeBtn').addEventListener('click', () => {
     analyzeData(); // Analyze data on each button click
-    //document.getElementById('analyzeBtn').disabled = true;
     // Show the upload message
+    //document.getElementById('analyzeBtn').disabled = true;
     document.getElementById('uploadMessage').classList.remove('hidden');
 });
 
