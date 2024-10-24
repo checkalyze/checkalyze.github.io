@@ -256,7 +256,7 @@ function analyzeData() {
 
 function showDetail(header, percentage) {
     const columnData = columnQualityData[header];
-    let modalText = `Validity: ${percentage}%\n`;
+    let modalText = `Validity: ${percentage}%\n <br>Total Invalid Rows: ${columnData.invalidRows.length}`;
     
     // Create a scrollable table
     let tableHtml = `
