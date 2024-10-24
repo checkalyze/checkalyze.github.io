@@ -42,7 +42,7 @@ h1 {
 #expandBtn {
     position: absolute;
     right: 0; /* Keep it on the right edge when collapsed */
-    top: 700px;
+    top: 850px;
     background-color: #007BFF;
     color: white;
     border: none;
