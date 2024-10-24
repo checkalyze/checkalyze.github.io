@@ -289,7 +289,7 @@ function showDetail(header, percentage) {
 
     tableHtml += '</table></div>'; // Close the div container
     
-    document.getElementById('modalHeader').innerText = header;
+    document.getElementById('modalHeader').innerText = "Invalid " + header + " Rows";
     document.getElementById('modalText').innerHTML = modalText + tableHtml; // Use innerHTML to include the table
     document.getElementById('myModal').style.display = "block";
 }
