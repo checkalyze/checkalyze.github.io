@@ -76,6 +76,25 @@ function processCSV(data) {
     setupDragAndDrop();
 }
 
+document.getElementById('collapseBtn').addEventListener('click', () => {
+    const fieldTypeContainer = document.getElementById('fieldTypesContainer');
+    const expandBtn = document.getElementById('expandBtn');
+
+    // Collapse the field types container by sliding it to the left
+    fieldTypeContainer.style.transform = 'translateX(-100%)'; // Slide off-screen
+    fieldTypeContainer.style.opacity = '0'; // Optional: Fade out for a smooth effect
+    expandBtn.style.display = 'block'; // Show the expand button on the left side
+});
+
+document.getElementById('expandBtn').addEventListener('click', () => {
+    const fieldTypeContainer = document.getElementById('fieldTypesContainer');
+    const expandBtn = document.getElementById('expandBtn');
+
+    // Expand the field types container by sliding it back into view
+    fieldTypeContainer.style.transform = 'translateX(0)'; // Slide back into view
+    fieldTypeContainer.style.opacity = '1'; // Restore opacity if faded out
+    expandBtn.style.display = 'none'; // Hide the expand button
+});
 
 // Function to create the table for the first five rows
 function createRowsTable(rows, headers) {

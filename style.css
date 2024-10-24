@@ -21,8 +21,41 @@ h1 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
     position: absolute; /* Position it outside of the flow */
-    left: 20px; /* Adjust to fit your layout */
-    top: 700px; /* Adjust vertical positioning if necessary */
+    right: 20px; /* Adjust to fit your layout */
+    top: 500px; /* Adjust vertical positioning if necessary */
+}
+
+#collapseBtn {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 0px;
+}
+
+#collapseBtn:hover {
+    background-color: #0056b3;
+}
+
+#expandBtn {
+    position: absolute;
+    right: 0; /* Keep it on the right edge when collapsed */
+    top: 700px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it's always on top */
+}
+
+#expandBtn:hover {
+    background-color: #0056b3;
 }
 
 .field-types h4 {
